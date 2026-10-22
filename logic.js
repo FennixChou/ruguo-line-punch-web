@@ -35,7 +35,7 @@
       if (st) p = new URLSearchParams(st.replace(/^\?/, '')).get('p');
     }
     if (!p && hash) p = String(hash).replace(/^#/, '');
-    return ['in', 'out', 'makeup', 'records'].indexOf(p) >= 0 ? p : 'in';
+    return ['in', 'out', 'makeup', 'records', 'admin', 'review'].indexOf(p) >= 0 ? p : 'in';
   }
   var api = { haversineM: haversineM, formatDistance: formatDistance, locationState: locationState, geoErrorText: geoErrorText, parseEntry: parseEntry };
   if (typeof module !== 'undefined') module.exports = api; else root.PunchLogic = api;

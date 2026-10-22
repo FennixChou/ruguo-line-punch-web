@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>如菓員工打卡</title>
-<link rel="stylesheet" href="style.css?v=20261022e">
+<link rel="stylesheet" href="style.css?v=20261022f">
 </head>
 <body>
 <div class="wrap">
@@ -33,6 +33,8 @@
     <button role="tab" data-tab="out">下班</button>
     <button role="tab" data-tab="makeup">補登</button>
     <button role="tab" data-tab="records">紀錄</button>
+    <button role="tab" data-tab="admin" class="boss-tab hidden">全員</button>
+    <button role="tab" data-tab="review" class="boss-tab hidden">審核</button>
   </div>
 
   <section id="tab-punch" class="hidden">
@@ -74,11 +76,46 @@
     </div>
   </section>
 
+  <section id="tab-denied" class="hidden">
+    <div class="card"><h2>僅老闆可使用</h2><div class="todo">此頁面只開放給老闆。若您是老闆，請確認以老闆的 LINE 帳號開啟。</div></div>
+  </section>
+
+  <section id="tab-admin" class="hidden">
+    <div class="card">
+      <div class="todo" id="ad-quota"></div>
+      <div class="seg" role="tablist">
+        <button role="tab" data-ad="day" aria-selected="true">今日</button>
+        <button role="tab" data-ad="month" aria-selected="false">本月</button>
+      </div>
+      <div id="ad-day-ctl">
+        <label for="ad-date">日期</label>
+        <input type="date" id="ad-date">
+      </div>
+      <div id="ad-month-ctl" class="hidden">
+        <label for="ad-month">月份</label>
+        <input type="month" id="ad-month">
+      </div>
+      <label for="ad-user">員工</label>
+      <select id="ad-user"><option value="">全部員工</option></select>
+      <div class="sum" id="ad-sum"></div>
+      <div class="tscroll"><table id="ad-table"><thead id="ad-head"></thead><tbody id="ad-body"></tbody></table></div>
+      <div class="msg hidden" id="ad-msg"></div>
+    </div>
+  </section>
+
+  <section id="tab-review" class="hidden">
+    <div class="card">
+      <h2>待審補登申請</h2>
+      <div id="rv-list"></div>
+      <div class="msg hidden" id="rv-msg"></div>
+    </div>
+  </section>
+
   <div class="consent-links hidden" id="consent-links" aria-hidden="true"><a href="#" id="link-consent" tabindex="-1"></a></div>
 
   <div class="msg bad hidden" id="fatal"></div>
 </div>
-<script src="config.js?v=20261022e"></script>
+<script src="config.js?v=20261022f"></script>
 <script>
 (function () {
   var h = location.hostname;
@@ -90,7 +127,7 @@
     document.body.appendChild(s);
   }
   load(mock ? 'mock-liff.js' : 'https://static.line-scdn.net/liff/edge/2/sdk.js', function () {
-    load('logic.js?v=20261022e', function () { load('app.js?v=20261022e'); });
+    load('logic.js?v=20261022f', function () { load('app.js?v=20261022f'); });
   }, function () {
     var f = document.getElementById('fatal');
     f.textContent = '載入 LINE 元件失敗，請檢查網路後重開。';
