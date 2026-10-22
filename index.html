@@ -11,6 +11,24 @@
   <h1>如菓員工打卡</h1>
   <div class="sub" id="who">載入中…</div>
 
+  <section id="consent" class="hidden">
+    <div class="card">
+      <h2 id="consent-title">個資告知同意書</h2>
+      <div class="todo" id="consent-ver"></div>
+      <div class="consent-text" id="consent-text" tabindex="0" aria-label="同意書全文，可捲動"></div>
+      <div class="todo" id="consent-hint">請捲動閱讀全文。同意書正式上線前將由律師審閱。</div>
+      <div id="consent-gate-btns">
+        <button class="btn" id="consent-agree">我已閱讀並同意</button>
+        <button class="btn secondary" id="consent-decline">不同意（改用替代方式）</button>
+      </div>
+      <div id="consent-review-btns" class="hidden">
+        <button class="btn secondary" id="consent-withdraw">撤回同意</button>
+        <button class="btn secondary" id="consent-back">返回</button>
+      </div>
+      <div class="msg hidden" id="consent-msg"></div>
+    </div>
+  </section>
+
   <div class="tabs" role="tablist">
     <button role="tab" data-tab="in">上班</button>
     <button role="tab" data-tab="out">下班</button>
@@ -56,6 +74,8 @@
       <div class="msg hidden" id="rc-msg"></div>
     </div>
   </section>
+
+  <div class="consent-links hidden" id="consent-links"><a href="#" id="link-consent">查看同意書／撤回同意</a></div>
 
   <div class="msg bad hidden" id="fatal"></div>
 </div>

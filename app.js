@@ -56,11 +56,60 @@
         setMsg($('punchmsg'), r.message + '｜距公司 ' + L.formatDistance(r.distanceM) + extra, r.late || r.early ? 'warn' : 'good');
         return refreshStatus();
       }
+      if (r.code === 'CONSENT_REQUIRED') { return refreshStatus().then(applyGate); }
       setMsg($('punchmsg'), r.message || '打卡失敗', r.code === 'ALREADY_IN' ? 'warn' : 'bad');
       show($('gomakeup'), r.code === 'OUT_OF_RANGE');
     }).catch(function (e) {
       setMsg($('punchmsg'), e && e.code ? L.geoErrorText(e.code) : '網路異常，請確認連線後重試。', 'bad');
     }).then(function () { state.busy = false; renderBtn(); });
+  }
+
+  // ---------- 個資告知同意 ----------
+  function consentOf() { return state.status && state.status.consent; }
+  function isGated() { var c = consentOf(); return !(c && c.agreed); }
+
+  /** 依同意狀態切換畫面：未同意只顯示同意書；已同意才顯示分頁與打卡鈕。 */
+  function applyGate(quiet) {
+    var gated = isGated();
+    show(document.querySelector('.tabs'), !gated);
+    if (gated) {
+      ['tab-punch', 'tab-makeup', 'tab-records'].forEach(function (id) { show($(id), false); });
+      showConsent('gate', quiet);
+    } else {
+      show($('consent'), false);
+    }
+    show($('consent-links'), !gated);
+  }
+
+  function showConsent(mode, quiet) {
+    var c = consentOf();
+    $('consent-title').textContent = c.title || '個資告知同意書';
+    $('consent-ver').textContent = '版本 ' + c.version;
+    $('consent-text').textContent = c.text;
+    $('consent-text').scrollTop = 0;
+    show($('consent-gate-btns'), mode === 'gate');
+    show($('consent-review-btns'), mode === 'review');
+    $('consent-hint').textContent = mode === 'gate'
+      ? (c.stale ? '同意書已更新，請重新閱讀並同意後才能繼續打卡。' : c.last === '撤回' ? '您先前已撤回同意，如要使用 LINE 打卡請重新同意。' : '請捲動閱讀全文。')
+      : '您目前已同意此版本。';
+    setMsg($('consent-msg'), '', '');
+    ['tab-punch', 'tab-makeup', 'tab-records'].forEach(function (id) { show($(id), false); });
+    show(document.querySelector('.tabs'), false); show($('consent-links'), false);
+    show($('consent'), true);
+    state.consentMode = mode;
+    if (!quiet) api({ action: 'consent', decision: 'view', ua: navigator.userAgent });
+  }
+
+  function sendConsent(decision) {
+    ['consent-agree', 'consent-decline', 'consent-withdraw'].forEach(function (id) { $(id).disabled = true; });
+    return api({ action: 'consent', decision: decision, ua: navigator.userAgent }).then(function (r) {
+      if (!r.ok && !r.consent) { setMsg($('consent-msg'), r.message || '送出失敗', 'bad'); return; }
+      if (r.consent) state.status.consent = r.consent;
+      if (decision === 'agree' && r.ok) { applyGate(); setTab(L.parseEntry(location.search, location.hash)); return; }
+      if (decision === 'withdraw' && r.ok) { applyGate(true); }
+      setMsg($('consent-msg'), r.message, r.ok ? (decision === 'agree' ? 'good' : 'warn') : 'bad');
+    }).catch(function () { setMsg($('consent-msg'), '網路異常，請重試。', 'bad'); })
+      .then(function () { ['consent-agree', 'consent-decline', 'consent-withdraw'].forEach(function (id) { $(id).disabled = false; }); });
   }
 
   function graceEnd(s) {
@@ -152,10 +201,15 @@
           b.addEventListener('click', function () { setTab(b.dataset.tab); });
         });
         $('punchbtn').addEventListener('click', doPunch);
+        $('consent-agree').addEventListener('click', function () { sendConsent('agree'); });
+        $('consent-decline').addEventListener('click', function () { sendConsent('decline'); });
+        $('consent-withdraw').addEventListener('click', function () { sendConsent('withdraw'); });
+        $('consent-back').addEventListener('click', function () { applyGate(); setTab(state.tab); });
+        $('link-consent').addEventListener('click', function (ev) { ev.preventDefault(); showConsent('review'); });
         $('gomakeup').addEventListener('click', function () { setTab('makeup'); });
         $('mk-submit').addEventListener('click', submitMakeup);
         $('rc-month').addEventListener('change', loadRecords);
-        setTab(L.parseEntry(location.search, location.hash));
+        if (isGated()) applyGate(); else { applyGate(); setTab(L.parseEntry(location.search, location.hash)); }
       });
     }).catch(function (e) { fatal('LINE 登入初始化失敗：' + (e && e.message || e)); });
   }

@@ -31,3 +31,8 @@ th{color:var(--muted);font-weight:500}
 .tag{font-size:12px;color:var(--warn)}
 .sum{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}.sum span{font-size:13px}
 .todo{font-size:12px;color:var(--muted)}
+h2{font-size:16px;margin:0 0 6px}
+.consent-text{white-space:pre-wrap;max-height:50vh;overflow-y:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);padding:12px;font-size:14px;line-height:1.7;margin:8px 0}
+.consent-links{margin-top:14px;text-align:center;font-size:13px}
+.consent-links a{color:var(--muted)}
+#consent .btn{margin-top:8px}
