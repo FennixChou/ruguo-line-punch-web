@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>如菓員工打卡</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <h1>如菓員工打卡</h1>
+  <div class="sub" id="who">載入中…</div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" data-tab="in">上班</button>
+    <button role="tab" data-tab="out">下班</button>
+    <button role="tab" data-tab="makeup">補登</button>
+    <button role="tab" data-tab="records">紀錄</button>
+  </div>
+
+  <section id="tab-punch" class="hidden">
+    <div class="card">
+      <div class="sub" id="datestr"></div>
+      <div class="clock" id="clock">--:--</div>
+      <div style="margin:10px 0 6px">距公司 <span class="dist" id="dist">—</span>（打卡後顯示）</div>
+      <div class="todo" id="accline"></div>
+      <div class="todo">按下打卡的那一刻才會讀取位置，打開頁面時不會定位。</div>
+    </div>
+    <button class="btn" id="punchbtn">確認打卡</button>
+    <div class="msg hidden" id="punchmsg"></div>
+    <button class="btn secondary hidden" id="gomakeup">改送補登申請</button>
+    <div class="todo" style="margin-top:10px">時間以系統伺服器為準，不採手機時間。位置只用於出勤判定，正常打卡只存「距離」。</div>
+  </section>
+
+  <section id="tab-makeup" class="hidden">
+    <div class="card">
+      <label for="mk-type">類型</label>
+      <select id="mk-type"><option value="IN">上班</option><option value="OUT">下班</option></select>
+      <label for="mk-date">日期</label>
+      <input type="date" id="mk-date">
+      <label for="mk-time">時間</label>
+      <input type="time" id="mk-time">
+      <label for="mk-reason">原因（例：直接到南屯案場會勘）</label>
+      <textarea id="mk-reason" rows="3" maxlength="200"></textarea>
+      <button class="btn" id="mk-submit" style="margin-top:12px">送出申請</button>
+      <div class="msg hidden" id="mk-msg"></div>
+    </div>
+  </section>
+
+  <section id="tab-records" class="hidden">
+    <div class="card">
+      <label for="rc-month">月份</label>
+      <input type="month" id="rc-month">
+      <div class="sum" id="rc-sum"></div>
+      <table><thead><tr><th>日期</th><th>上班</th><th>下班</th><th>備註</th></tr></thead><tbody id="rc-body"></tbody></table>
+      <div class="msg hidden" id="rc-msg"></div>
+    </div>
+  </section>
+
+  <div class="msg bad hidden" id="fatal"></div>
+</div>
+<script src="config.js"></script>
+<script>
+(function () {
+  var h = location.hostname;
+  var local = h === 'localhost' || h === '127.0.0.1';
+  var mock = local && new URLSearchParams(location.search).get('mock') === '1';
+  function load(src, next, fail) {
+    var s = document.createElement('script');
+    s.src = src; s.onload = next; s.onerror = fail || function () {};
+    document.body.appendChild(s);
+  }
+  load(mock ? 'mock-liff.js' : 'https://static.line-scdn.net/liff/edge/2/sdk.js', function () {
+    load('logic.js', function () { load('app.js'); });
+  }, function () {
+    var f = document.getElementById('fatal');
+    f.textContent = '載入 LINE 元件失敗，請檢查網路後重開。';
+    f.classList.remove('hidden');
+  });
+})();
+</script>
+</body>
+</html>
