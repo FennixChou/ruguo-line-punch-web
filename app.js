@@ -78,7 +78,7 @@
     } else {
       show($('consent'), false);
     }
-    show($('consent-links'), !gated);
+    show($('consent-links'), false); // 老闆 10/22 指示不在打卡頁顯示查看／撤回連結；權利改向老闆提出
   }
 
   function showConsent(mode, quiet) {
