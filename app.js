@@ -101,7 +101,7 @@
   }
 
   function sendConsent(decision) {
-    ['consent-agree', 'consent-decline', 'consent-withdraw'].forEach(function (id) { $(id).disabled = true; });
+    ['consent-agree', 'consent-withdraw'].forEach(function (id) { $(id).disabled = true; });
     return api({ action: 'consent', decision: decision, ua: navigator.userAgent }).then(function (r) {
       if (!r.ok && !r.consent) { setMsg($('consent-msg'), r.message || '送出失敗', 'bad'); return; }
       if (r.consent) state.status.consent = r.consent;
@@ -109,7 +109,7 @@
       if (decision === 'withdraw' && r.ok) { applyGate(true); }
       setMsg($('consent-msg'), r.message, r.ok ? (decision === 'agree' ? 'good' : 'warn') : 'bad');
     }).catch(function () { setMsg($('consent-msg'), '網路異常，請重試。', 'bad'); })
-      .then(function () { ['consent-agree', 'consent-decline', 'consent-withdraw'].forEach(function (id) { $(id).disabled = false; }); });
+      .then(function () { ['consent-agree', 'consent-withdraw'].forEach(function (id) { $(id).disabled = false; }); });
   }
 
   function graceEnd(s) {
@@ -125,9 +125,9 @@
       var tip = '';
       if (s.flexOut) {
         var h = (s.requiredWorkMin + s.breakMin) / 60;
-        tip = '上班卡後滿 ' + (Math.round(h * 10) / 10) + ' 小時' + (s.breakMin ? '（含午休 ' + s.breakMin + ' 分鐘）' : '') + '可下班';
+        tip = '上班卡後滿 ' + (Math.round(h * 10) / 10) + ' 小時' + (s.breakMin ? '（含午休 ' + s.breakMin + ' 分鐘）' : '') + '可打卡簽退下班';
         if (s.dueOutHm) tip += '，今天 ' + s.dueOutHm + ' 後下班不算早退';
-        rule = '上班 ' + s.workStart + '（寬限至 ' + graceEnd(s) + '）';
+        rule = '上班打卡簽到時間為 ' + s.workStart + '（彈性至 ' + graceEnd(s) + '）';
       }
       $('who').textContent = s.name + '，您好　' + rule + (tip ? '｜' + tip : '');
       $('datestr').textContent = s.serverDate;
@@ -202,7 +202,6 @@
         });
         $('punchbtn').addEventListener('click', doPunch);
         $('consent-agree').addEventListener('click', function () { sendConsent('agree'); });
-        $('consent-decline').addEventListener('click', function () { sendConsent('decline'); });
         $('consent-withdraw').addEventListener('click', function () { sendConsent('withdraw'); });
         $('consent-back').addEventListener('click', function () { applyGate(); setTab(state.tab); });
         $('link-consent').addEventListener('click', function (ev) { ev.preventDefault(); showConsent('review'); });
