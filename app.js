@@ -43,8 +43,8 @@
 
   function doPunch() {
     if (state.busy) return;
-    state.busy = true; renderBtn(); show($('gomakeup'), false); setMsg($('punchmsg'), '定位並打卡中…（只在此刻讀取一次位置）', '');
     var type = state.tab === 'out' ? 'OUT' : 'IN';
+    state.busy = true; renderBtn(); show($('gomakeup'), false); setMsg($('punchmsg'), '定位並打卡中…（只在此刻讀取一次位置）', '');
     readPos().then(function (p) {
       state.pos = p;
       return api({ action: 'punch', type: type, lat: p.lat, lng: p.lng, accuracy: p.accuracy });
@@ -58,7 +58,7 @@
         return refreshStatus();
       }
       if (r.code === 'CONSENT_REQUIRED') { return refreshStatus().then(applyGate); }
-      setMsg($('punchmsg'), r.message || '打卡失敗', r.code === 'ALREADY_IN' ? 'warn' : 'bad');
+      setMsg($('punchmsg'), r.message || '打卡失敗', r.code === 'DUPLICATE_PUNCH' ? 'warn' : 'bad');
       show($('gomakeup'), r.code === 'OUT_OF_RANGE');
     }).catch(function (e) {
       setMsg($('punchmsg'), e && e.code ? L.geoErrorText(e.code) : '網路異常，請確認連線後重試。', 'bad');

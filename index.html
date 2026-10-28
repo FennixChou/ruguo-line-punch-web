@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>如菓員工打卡</title>
-<link rel="stylesheet" href="style.css?v=20261028a">
+<link rel="stylesheet" href="style.css?v=20261028b">
 </head>
 <body>
 <div class="wrap">
@@ -149,7 +149,7 @@
 
   <div class="msg bad hidden" id="fatal"></div>
 </div>
-<script src="config.js?v=20261028a"></script>
+<script src="config.js?v=20261028b"></script>
 <script>
 (function () {
   var h = location.hostname;
@@ -161,7 +161,7 @@
     document.body.appendChild(s);
   }
   load(mock ? 'mock-liff.js' : 'https://static.line-scdn.net/liff/edge/2/sdk.js', function () {
-    load('logic.js?v=20261028a', function () { load('app.js?v=20261028a'); });
+    load('logic.js?v=20261028b', function () { load('app.js?v=20261028b'); });
   }, function () {
     var f = document.getElementById('fatal');
     f.textContent = '載入 LINE 元件失敗，請檢查網路後重開。';
