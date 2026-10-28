@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>如菓員工打卡</title>
-<link rel="stylesheet" href="style.css?v=20261022f">
+<link rel="stylesheet" href="style.css?v=20261028a">
 </head>
 <body>
 <div class="wrap">
@@ -32,6 +32,7 @@
     <button role="tab" data-tab="in">上班</button>
     <button role="tab" data-tab="out">下班</button>
     <button role="tab" data-tab="makeup">補登</button>
+    <button role="tab" data-tab="leave">請假</button>
     <button role="tab" data-tab="records">紀錄</button>
     <button role="tab" data-tab="admin" class="boss-tab hidden">全員</button>
     <button role="tab" data-tab="review" class="boss-tab hidden">審核</button>
@@ -63,6 +64,30 @@
       <textarea id="mk-reason" rows="3" maxlength="200"></textarea>
       <button class="btn" id="mk-submit" style="margin-top:12px">送出申請</button>
       <div class="msg hidden" id="mk-msg"></div>
+      <button class="btn secondary" id="mk-goleave">要請假？改填請假申請</button>
+    </div>
+  </section>
+
+  <section id="tab-leave" class="hidden">
+    <div class="card">
+      <div class="todo" id="lv-annual"></div>
+      <label for="lv-type">假別</label>
+      <select id="lv-type"></select>
+      <div class="todo" id="lv-typehint"></div>
+      <label class="chk"><input type="checkbox" id="lv-allday" checked> 整天（每天 8 小時）</label>
+      <div class="row2">
+        <div><label for="lv-from">開始日期</label><input type="date" id="lv-from"></div>
+        <div><label for="lv-to">結束日期</label><input type="date" id="lv-to"></div>
+      </div>
+      <div class="row2 hidden" id="lv-times">
+        <div><label for="lv-start">開始時間</label><input type="time" id="lv-start" value="09:00" step="3600"></div>
+        <div><label for="lv-end">結束時間</label><input type="time" id="lv-end" value="18:00" step="3600"></div>
+      </div>
+      <div class="todo" id="lv-rule">最小單位 1 小時，中午休息時間不算。跨多天時，第一天從開始時間起、最後一天到結束時間止，中間幾天整天；週末與放假日自動略過。</div>
+      <label for="lv-reason">原因（選填）</label>
+      <textarea id="lv-reason" rows="2" maxlength="200"></textarea>
+      <button class="btn" id="lv-submit" style="margin-top:12px">送出申請</button>
+      <div class="msg hidden" id="lv-msg"></div>
     </div>
   </section>
 
@@ -73,6 +98,13 @@
       <div class="sum" id="rc-sum"></div>
       <table><thead><tr><th>日期</th><th>上班</th><th>下班</th><th>備註</th></tr></thead><tbody id="rc-body"></tbody></table>
       <div class="msg hidden" id="rc-msg"></div>
+    </div>
+    <div class="card" id="rc-leave">
+      <h2>請假</h2>
+      <div class="todo" id="rc-annual"></div>
+      <div class="sum" id="rc-lvsum"></div>
+      <table><thead><tr><th>假別</th><th>時間</th><th>狀態</th></tr></thead><tbody id="rc-lvbody"></tbody></table>
+      <div class="todo" id="rc-lvempty"></div>
     </div>
   </section>
 
@@ -107,6 +139,8 @@
     <div class="card">
       <h2>待審補登申請</h2>
       <div id="rv-list"></div>
+      <h2 class="rv-sub">待審請假申請</h2>
+      <div id="rv-leave-list"></div>
       <div class="msg hidden" id="rv-msg"></div>
     </div>
   </section>
@@ -115,7 +149,7 @@
 
   <div class="msg bad hidden" id="fatal"></div>
 </div>
-<script src="config.js?v=20261022f"></script>
+<script src="config.js?v=20261028a"></script>
 <script>
 (function () {
   var h = location.hostname;
@@ -127,7 +161,7 @@
     document.body.appendChild(s);
   }
   load(mock ? 'mock-liff.js' : 'https://static.line-scdn.net/liff/edge/2/sdk.js', function () {
-    load('logic.js?v=20261022f', function () { load('app.js?v=20261022f'); });
+    load('logic.js?v=20261028a', function () { load('app.js?v=20261028a'); });
   }, function () {
     var f = document.getElementById('fatal');
     f.textContent = '載入 LINE 元件失敗，請檢查網路後重開。';

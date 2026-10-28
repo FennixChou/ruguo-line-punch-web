@@ -54,3 +54,11 @@ h2{font-size:16px;margin:0 0 6px}
 .consent-links{margin-top:14px;text-align:center;font-size:13px}
 .consent-links a{color:var(--muted)}
 #consent .btn{margin-top:8px}
+.msg{white-space:pre-line}
+.chk{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:15px;margin:12px 0 4px}
+.chk input{width:auto}
+.row2{display:flex;gap:10px}.row2>div{flex:1;min-width:0}
+.lv-st{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;border:1px solid var(--line);white-space:nowrap}
+.lv-st.pending{color:var(--warn);border-color:var(--warn)}.lv-st.ok{color:var(--ok);border-color:var(--ok)}.lv-st.no{color:var(--danger);border-color:var(--danger)}
+.lv-note{font-size:12px;color:var(--muted);word-break:break-word}
+.rv-sub{margin:14px 0 0}
